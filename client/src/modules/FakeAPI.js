@@ -8,8 +8,11 @@ let _users = {};
 // webpack doesn't like localStorage otherwise
 let localStorage = global.window.localStorage;
 
+function _getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 function _populateUserData(user){
-  user.profileImage = 'https://randomuser.me/api/portraits/women/50.jpg'; // TODO generate random profile image
+  user.profileImage = 'http://thecatapi.com/api/images/get?format=src&type=gif'; // TODO generate random profile image
   user.password = _encode(user.password);
   return {
     user: user,
@@ -85,6 +88,7 @@ class FakeAPI {
 
 
 }
+
 FakeAPI.init();
 export default FakeAPI;
 

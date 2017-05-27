@@ -33,6 +33,12 @@ class DashboardPage extends React.Component {
     });
   }
 
+  /**
+   * Handle element movement. Persist the element's new (x,y) position.
+   * @param element
+   * @param event
+   * @param ui
+     */
   onDrag(element, event, ui) {
     var currentElementPositions = this.state.positions[element];
     if (currentElementPositions){

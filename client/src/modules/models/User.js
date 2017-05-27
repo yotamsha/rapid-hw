@@ -20,14 +20,13 @@ class User {
         return fakeAPI.login(username, password).then(function authSuccess(token){
           // success
           Auth.authenticateUser(token);
+          _cachedUser = null;
           return resolve();
         }, function authError(){
           //error
           return reject();
 
         });
-        //return resolve();
-
       }
     });
 

@@ -23,9 +23,6 @@ const Dashboard = ({user, elementsPos, onDrag}) => (
     </Draggable>}
   </div>
 );
-/*
- <img  src={user.profileImage} style={{left : elementsPos.profileImage.x, top : elementsPos.profileImage.y}}/>
- */
 
 Dashboard.propTypes = {
   onDrag: PropTypes.func.isRequired,
