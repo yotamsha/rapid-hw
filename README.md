@@ -1,12 +1,21 @@
-Authentication in React Applications
-====================================
-The source code for a two-part tutorial for beginners who want to start to build applications using React and add an authentication layer to it. It was written for my blog, [https://vladimirponomarev.com](http://vladimirponomarev.com).
+### RapidAPI Homework App
 
-Parts of the tutorial
----------------------
-1. [Creating Components](https://vladimirponomarev.com/blog/authentication-in-react-apps-creating-components) - in this part, we will create a basic application server, learn to bundle scripts using Webpack, get acquainted with basics of React (components, JSX syntax, props, states).
-2. [Authentication Using JSON Web Token (JWT)](https://vladimirponomarev.com/blog/authentication-in-react-apps-jwt) - in this part, we will continue to improve the application and add authentication to it.
-
-Screenshot
-----------
-![Authentication in React Applications](https://raw.github.com/vladimirponomarev/authentication-in-react-apps/master/screenshot.png)
+## Installation
+    
+  * Clone the project.
+  
+  * Install dependencies:
+    
+        npm install
+     
+## Run
+  
+  * Open the project's folder, and run:
+            
+        npm run bundle
+        
+  *  Now, in another command window, run:
+  
+        npm start
+  
+  * Open your browser at http://localhost:8000 

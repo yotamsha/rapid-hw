@@ -12,7 +12,7 @@ function _getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 function _populateUserData(user){
-  user.profileImage = 'http://thecatapi.com/api/images/get?format=src&type=gif'; // TODO generate random profile image
+  user.profileImage = 'http://thecatapi.com/api/images/get?format=src&type=gif'; // random cat gifs :)
   user.password = _encode(user.password);
   return {
     user: user,
