@@ -4,7 +4,6 @@ import Draggable from 'react-draggable';
 
 const Dashboard = ({user, elementsPos, onDrag}) => (
   <div className="user-profile-container">
-
     {elementsPos.fullName &&
     <Draggable
       onStop={(e,ui) => onDrag('fullName',e,ui)}>

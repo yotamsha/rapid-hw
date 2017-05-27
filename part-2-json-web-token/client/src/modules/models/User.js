@@ -1,6 +1,7 @@
 import Auth from '../Auth';
 import fakeAPI from '../FakeAPI';
 
+let _cachedUser = null;
 class User {
 
   /**
@@ -15,9 +16,16 @@ class User {
       if (Auth.isUserAuthenticated()){
         return resolve();
       } else {
-        Auth.authenticateUser('token12111');
-        //return fakeAPI.login(username, password).then(_authSuccess, _authError);
-        return resolve();
+        return fakeAPI.login(username, password).then(function authSuccess(token){
+          // success
+          Auth.authenticateUser(token);
+          return resolve();
+        }, function authError(){
+          //error
+          return reject();
+
+        });
+        //return resolve();
 
       }
     });
@@ -29,12 +37,23 @@ class User {
   }
 
   static getInfo(){
-    return fakeAPI.getUserInfo();
+    return new Promise(function(resolve, reject){
+      fakeAPI.getUserInfo(Auth.getToken()).then(function(user){
+        _cachedUser = user;
+        resolve(user);
+      }, function(){
+        reject();
+      });
+    });
 
   }
 
   static setElementsPositions(positions) {
-    return fakeAPI.setElementsPositions(positions);
+    return fakeAPI.setElementsPositions(Auth.getToken(), positions);
+  }
+
+  static getUsername() {
+    return _cachedUser && _cachedUser.username;
   }
 
 

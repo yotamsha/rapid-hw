@@ -51,6 +51,12 @@ class LoginPage extends React.Component {
     User.login(username, password).then(function authSuccess(){
       _this.context.router.replace('/');
       //this.changeUser();
+    }, function authError(error){
+      _this.setState({
+      errors : {
+        summary : 'Please check credentials and try again.'
+      }
+      });
     });
   }
 

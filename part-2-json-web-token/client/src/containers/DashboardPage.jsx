@@ -24,7 +24,7 @@ class DashboardPage extends React.Component {
    * This method will be executed after initial rendering.
    */
   componentDidMount() {
-    var _this = this
+    var _this = this;
     User.getInfo().then(function (data) {
       _this.setState({
         user: data.user,
@@ -41,11 +41,6 @@ class DashboardPage extends React.Component {
         x: currentElementPositions.x + ui.x,
         y: currentElementPositions.y + ui.y
       };
-      //console.log("event" + JSON.stringify(event));
-      console.log("ui.deltaX = " + ui.deltaX);
-      console.log("ui.deltaY = " + ui.deltaY);
-      console.log("newPositionData.x = " + newPositionData[element].x);
-      console.log("newPositionData.y = " + newPositionData[element].y);
       // persist element position.
       User.setElementsPositions(newPositionData);
     }

@@ -1,166 +1,85 @@
-//import bcrypt from 'bcryptjs';
-import genSalt from './salt';
-//const salt = bcrypt.genSaltSync(10);
+
 var profileImages = ['https://randomuser.me/api/portraits/women/50.jpg',
   'https://randomuser.me/api/portraits/women/76.jpg',
   'https://randomuser.me/api/portraits/men/82.jpg',
   'https://randomuser.me/api/portraits/men/66.jpg'
 ];
 let _users = {};
-let _token = 123;
 // webpack doesn't like localStorage otherwise
 let localStorage = global.window.localStorage;
 
-// /**
-//  * Fake remote server, using bcrypt and localStorage to persist data across page
-//  * reloads
-//  * @type {Object}
-//  */
-// var fakeAPI = {
-//   /**
-//    * Populates the users var, similar to seeding a database in the real world
-//    */
-//   init() {
-//     // Get the previous users from localStorage if they exist, otherwise
-//     // populates the localStorage
-//     if (localStorage.users === undefined || !localStorage.encrypted) {
-//       // Set default user
-//       const AzureDiamond = "AzureDiamond";
-//       const AzureDiamondSalt = genSalt(AzureDiamond);
-//       const AzureDiamondPass = bcrypt.hashSync("hunter2", AzureDiamondSalt);
-//       users = {
-//         [AzureDiamond]: bcrypt.hashSync(AzureDiamondPass, salt)
-//       };
-//       localStorage.users = JSON.stringify(users);
-//       localStorage.encrypted = true;
-//     } else {
-//       users = JSON.parse(localStorage.users);
-//     }
-//   },
-//   /**
-//    * Pretends to log a user in
-//    *
-//    * @param {string} username The username of the user to log in
-//    * @param {string} password The password of the user to register
-//    * @param {?callback} callback Called after a user is logged in
-//    */
-//   login(username, password, callback) {
-//     const userExists = this.doesUserExist(username);
-//     // If the user exists and the password fits log the user in
-//     if (userExists && bcrypt.compareSync(password, users[username])) {
-//       if (callback) callback({
-//         authenticated: true,
-//         token: Math.random().toString(36).substring(7)
-//       });
-//     } else {
-//       if (userExists) {
-//         // If the password is wrong, throw the password-wrong error
-//         var error = {
-//           type: "password-wrong"
-//         }
-//       } else {
-//         // If the user doesn't exist, throw the user-doesnt-exist
-//         var error = {
-//           type: "user-doesnt-exist"
-//         }
-//       }
-//       if (callback) callback({
-//         authenticated: false,
-//         error: error
-//       });
-//     }
-//   },
-//   /**
-//    * Pretends to register a user
-//    *
-//    * @param {string} username The username of the user to register
-//    * @param {string} password The password of the user to register
-//    * @param {?callback} callback Called after a user is registered
-//    */
-//   register(username, password, callback) {
-//     if (!this.doesUserExist(username)) {
-//       // If the username isn't used, hash the password with bcrypt to store it
-//       // in localStorage
-//       users[username] = bcrypt.hashSync(password, salt);
-//       localStorage.users = JSON.stringify(users);
-//       if (callback) callback({
-//         registered: true
-//       });
-//     } else {
-//       // If the username is already in use, throw the username-exists error
-//       if (callback) callback({
-//         registered: false,
-//         error: {
-//           type: "username-exists"
-//         }
-//       });
-//     }
-//   },
-//   /**
-//    * Pretends to log a user out
-//    * @param  {Function} callback Called after the user was logged out
-//    */
-//   logout(callback) {
-//     localStorage.removeItem('token');
-//     if (callback) callback();
-//   },
-//   /**
-//    * Checks if a username exists in the db
-//    * @param  {string} username The username that should be checked
-//    * @return {boolean}         True if the username exists, false if it doesn't
-//    */
-//   doesUserExist(username) {
-//     return !(users[username] === undefined);
-//   }
-// }
-//
-// fakeAPI.init();
-//
-// module.exports = fakeAPI;
+function _populateUserData(user){
+  user.profileImage = 'https://randomuser.me/api/portraits/women/50.jpg'; // TODO generate random profile image
+  user.password = _encode(user.password);
+  return {
+    user: user,
+    positions: {
+      fullName: {
+        x: 290,
+        y: 80
+      },
+      profileImage: {
+        x: 60,
+        y: 40
+      }
+    }
+  };
 
+}
+
+function _encode(val) {
+  return btoa(val);
+}
+function _decode(val) {
+  return atob(val);
+}
 class FakeAPI {
 
-  static init(){
+
+  static init() {
     if (localStorage.users === undefined) {
       _users = {};
-      localStorage.setItem('users',JSON.stringify(_users));
+      localStorage.setItem('users', JSON.stringify(_users));
     } else {
       _users = JSON.parse(localStorage.getItem('users'));
     }
   }
 
-  static setElementsPositions(elementsPositions) {
-    _users[_token].positions = Object.assign({}, _users[_token].positions,elementsPositions);
+  static login(username, password) {
     return new Promise(function(resolve, reject){
+      if (_users[username] && _encode(password) === _users[username].user.password){
+        // The user exists and the password fits.
+        return resolve(_encode(username)); // generate a random token
+      } else {
+        return reject();
+      }
+    });
+  }
+
+  static setElementsPositions(token, elementsPositions) {
+    var username = _decode(token);
+    _users[username].positions = Object.assign({}, _users[username].positions, elementsPositions);
+    return new Promise(function (resolve, reject) {
       localStorage.setItem('users', JSON.stringify(_users));
       resolve();
     });
   }
 
   static createUser(user) {
-    return new Promise(function(resolve, reject){
-      user.profileImage = 'https://randomuser.me/api/portraits/women/50.jpg'; // TODO generate random profile image
-        _users[_token] = {
-        user : user,
-        positions: {
-          fullName : {
-            x : 290,
-            y : 80
-          },
-          profileImage : {
-            x : 60,
-            y : 40
-          }
-        }
-      }; // TODO save a hashed version.
+    return new Promise(function (resolve, reject) {
+      if (!user || !user.username || !user.password || _users[user.username]){
+        return reject();
+      }
+      _users[user.username] = _populateUserData(user);
       localStorage.setItem('users', JSON.stringify(_users));
       resolve();
     });
   }
 
-  static getUserInfo() {
-    return new Promise(function(resolve, reject){
-      resolve(_users[_token]);
+  static getUserInfo(token) {
+    return new Promise(function (resolve, reject) {
+      var username = _decode(token);
+      resolve(_users[username]);
     });
   }
 
