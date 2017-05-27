@@ -1,4 +1,4 @@
-### RapidAPI Homework App
+# RapidAPI Homework App
 
 ## Installation
     
