@@ -1,14 +1,9 @@
 import React, { PropTypes } from 'react';
 import { Link, IndexLink } from 'react-router';
 import Auth from '../modules/Auth';
-import User from '../modules/models/User';
 
-function getUserName(){
-  User.getCachedUser().then(function(user){
-    return user.username;
-  });
-}
-const Base = ({ children }) => (
+
+const Base = ({ children, user }) => (
   <div>
     <div className="top-bar">
 
@@ -16,13 +11,11 @@ const Base = ({ children }) => (
       </div>
       {Auth.isUserAuthenticated() ? (
         <div className="top-bar-right">
-          Hello there! |
+          Hello {user.username} |
           <Link to="/logout">Log out</Link>
         </div>
       ) : (
         <div className="top-bar-right">
-          <Link to="/login">Log in</Link>
-          <Link to="/signup">Sign up</Link>
         </div>
       )}
 
@@ -35,7 +28,8 @@ const Base = ({ children }) => (
 );
 
 Base.propTypes = {
-  children: PropTypes.object.isRequired
+  children: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired
 };
 
 export default Base;
